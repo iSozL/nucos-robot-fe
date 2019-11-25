@@ -123,17 +123,6 @@ export default {
   // umi routes: https://umijs.org/zh/guide/router.html
   routes: [
     {
-      path: '/user',
-      component: '../layouts/UserLayout',
-      routes: [
-        {
-          name: 'login',
-          path: '/user/login',
-          component: './user/login',
-        },
-      ],
-    },
-    {
       path: '/',
       component: '../layouts/SecurityLayout',
       routes: [
@@ -144,20 +133,13 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/welcome',
+              redirect: '/index',
             },
             {
-              path: '/welcome',
-              name: 'welcome',
-              icon: 'smile',
-              component: './Welcome',
-            },
-            {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
+              path: '/index',
+              name: '首页',
+              icon: 'home',
+              component: './index/index'
             },
             {
               component: './404',
