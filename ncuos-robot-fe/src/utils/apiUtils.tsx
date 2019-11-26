@@ -1,20 +1,15 @@
 import React from 'react';
 import request from 'umi-request'
 
-interface requestDatas {
-  url: string;
-  methods: string;
-  data?: any; 
-}
-const Request = (props: requestDatas) => {
+const Request = (url: string, method: string, data: any) => {
   return new Promise((resolve, reject) => {
-    request(`http://guoxy.top/${props.url}`, {
-      method: props.methods,
-      data: props.data
+    request(`http://guoxy.top/${url}`, {
+      method: method,
+      data: data
     }).then((res) => {
-      console.log(res)
-    }).catch((rej) => {
-      console.log(rej)
+      resolve(res)
+    }).catch((err) => {
+      reject(err)
     })
   })
 }

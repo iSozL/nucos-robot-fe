@@ -79,7 +79,11 @@ class List extends React.Component {
 
 const Pendding = () => {
   useEffect(() => {
-    Request({url:'/api/robot/todo', methods:'get'})
+    Request('/api/robot/todo', 'get').then(
+      (res:any) => {
+        console.log(res.data.data)
+      }
+    )
   })
   return (
     <PageHeaderWrapper>
