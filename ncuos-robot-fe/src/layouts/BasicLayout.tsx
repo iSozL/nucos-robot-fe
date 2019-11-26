@@ -16,7 +16,6 @@ import { Dispatch } from 'redux';
 import { connect } from 'dva';
 import { Icon, Result, Button } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
-
 import Authorized from '@/utils/Authorized';
 import { ConnectState } from '@/models/connect';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
@@ -54,6 +53,15 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
 /**
  * use Authorized check all menu item
  */
+
+const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
+menuList.map(item => {
+  const localItem = {
+    ...item,
+    children: item.children ? menuDataRender(item.children) : [],
+  };
+  return Authorized.check(item.authority, localItem, null) as MenuDataItem;
+});
 
 const defaultFooterDom = (
   <DefaultFooter
@@ -173,7 +181,10 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         );
       }}
       footerRender={footerRender}
+      menuDataRender={menuDataRender}
       formatMessage={formatMessage}
+      {...props}
+      {...settings}
     >
       <Authorized authority={authorized!.authority} noMatch={noMatch}>
         {children}
