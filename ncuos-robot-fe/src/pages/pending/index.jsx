@@ -109,7 +109,7 @@ const Pendding = () => {
         setData(res.data.undocumented_issues)
       }
     )
-  }, [])
+  })
   return (
     <PageHeaderWrapper>
       <Card>

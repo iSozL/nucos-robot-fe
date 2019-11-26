@@ -139,7 +139,7 @@ export default {
               path: '/index',
               name: '首页',
               icon: 'home',
-              component: './index/index',
+              component: './index/index.jsx',
             },
             {
               path: '/pending',

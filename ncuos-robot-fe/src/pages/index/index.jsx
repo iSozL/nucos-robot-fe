@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Table, Card, Upload, message, Button, Icon, Modal, Input } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import style from './index.less'
+import Request from '../../utils/apiUtils'
 
 const { TextArea } = Input
 class UploadBox extends React.Component {
@@ -13,14 +14,14 @@ class UploadBox extends React.Component {
     });
   };
 
-  handleOk = (e: any) => {
+  handleOk = (e) => {
     console.log(e);
     this.setState({
       visible: false,
     });
   };
 
-  handleCancel = (e: any) => {
+  handleCancel = (e) => {
     console.log(e);
     this.setState({
       visible: false,
@@ -72,10 +73,10 @@ const Uploader = () => {
     },
   };
   return (
-    <Upload {...props}>
+    <Upload {...props} style={{display: "inline-block"}}>
       <Button>
-        <Icon type="upload" /> Click to Upload
-    </Button>
+        <Icon type="upload" /> 上传文件
+      </Button>
     </Upload>
   )
 }
@@ -83,8 +84,8 @@ const Index = () => {
   const columns = [
     {
       title: '描述',
-      dataIndex: 'describe',
-      key: 'describe',
+      dataIndex: 'description',
+      key: 'description',
       render: text => <div>{text}</div>,
     },
     {
@@ -98,100 +99,29 @@ const Index = () => {
       key: 'time',
     },
   ];
+  const [lst, setLst] = useState()
+  useEffect(() => {
+    Request('api/robot/file').then(
+      res => {
+        setLst(res.data)
+      }
+    )
+  })
 
-  const data = [
-    {
-      key: '1',
-      describe: '问答库1.0',
-      name: 'nmsl',
-      time: 'New York No. 1 Lake Park',
-    },
-    {
-      key: '2',
-      describe: '问答库2.0',
-      name: 'wmsl',
-      time: 'London No. 1 Lake Park',
-    },
-    {
-      key: '3',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '4',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '5',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '6',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '7',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '8',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '9',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '10',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '11',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '12',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '13',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '14',
-      describe: '问答库3.0',
-      name: 'tmsl',
-      time: 'Sidney No. 1 Lake Park',
-    },
-  ];
   return (
     <PageHeaderWrapper>
       <Card>
-        <div style={{ marginBottom: "20px" }}>更新语料库：
-          <UploadBox />
+        <div style={{ marginBottom: "20px", display: "flex" }}>
+          <span style={{display: "inline-block", marginBottom: "10px"}}>更新语料库：</span>
+          <div>
+            <UploadBox />
+            <div>支持拓展名：.rar .zip .doc .docx .pdf .jpg...</div>
+          </div>
         </div>
-        <div>编辑历史：<Table columns={columns} dataSource={data} /></div>
+        <div>
+          <span style={{display: "inline-block", marginBottom: "10px"}}>编辑历史：</span>
+          <Table columns={columns} dataSource={lst} />
+        </div>
       </Card>
     </PageHeaderWrapper>
   )
