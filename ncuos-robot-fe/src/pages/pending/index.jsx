@@ -1,14 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Card, Table, Button, Popconfirm } from 'antd';
+import { Card, Table, Button, Popconfirm, message } from 'antd';
 import Request from '../../utils/apiUtils'
 
 const Delete = (props) => {
   function deletes(){
-    console.log(props.record.id)
+    Request('api/robot/todo', 'DELETE', {record_id: [props.record.id]}).then(
+      res => {
+        if(res.status == 0) {
+          message.success(res.message)
+        } else {
+          message.error(res.message)
+        }
+      },
+      err => {
+        message.error(err.message.toString())
+      }
+    )
   }
   return(
-    <Popconfirm title="确定删除吗?" onConfirm={() => deletes()}>删除</Popconfirm>
+    <Popconfirm title="确定删除吗?" onConfirm={() => deletes()}>
+      <a>删除</a>
+    </Popconfirm>
   )
 }
 const columns = [
@@ -30,17 +43,6 @@ const columns = [
   }
 ];
 
-const data = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    id: i,
-    describe: `Edward King ${i}`,
-    time: 32,
-    action: `London, Park Lane no. ${i}`,
-  });
-}
-
-
 class List extends React.Component {
   state = {
     selectedRowKeys: [], // Check here to configure the default column
@@ -50,12 +52,24 @@ class List extends React.Component {
   start = () => {
     this.setState({ loading: true });
     // ajax request after empty completing
-    setTimeout(() => {
-      this.setState({
-        selectedRowKeys: [],
-        loading: false,
-      });
-    }, 1000);
+    this.setState({
+      selectedRowKeys: [],
+      loading: false,
+    });
+    console.log(this.state.selectedRowKeys)
+    Request('api/robot/todo', 'DELETE', {record_id: this.state.selectedRowKeys}).then(
+      res => {
+        if(res.status == 0) {
+          console.log(res)
+          message.success(res.message)
+        } else {
+          message.error(res.message)
+        }
+      },
+      err => {
+        message.error(err.message.toString())
+      }
+    )
   };
 
   onSelectChange = selectedRowKeys => {
@@ -72,11 +86,13 @@ class List extends React.Component {
     return (
       <div>
         <div style={{ marginBottom: 16 }}>
-          <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
-            Reload
-          </Button>
+          <Popconfirm title="确认删除吗?" onConfirm={this.start}>
+            <Button type="primary" disabled={!hasSelected} loading={loading}>
+              批量删除
+            </Button>
+          </Popconfirm>
           <span style={{ marginLeft: 8 }}>
-            {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+            {hasSelected ? `已选择 ${selectedRowKeys.length} 项` : ''}
           </span>
         </div>
         <Table rowSelection={rowSelection} columns={columns} dataSource={this.props.datas} />
@@ -93,7 +109,7 @@ const Pendding = () => {
         setData(res.data.undocumented_issues)
       }
     )
-  })
+  }, [])
   return (
     <PageHeaderWrapper>
       <Card>
