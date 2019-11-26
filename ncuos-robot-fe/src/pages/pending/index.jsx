@@ -1,8 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Card, Table, Button } from 'antd';
+import { Card, Table, Button, Popconfirm } from 'antd';
 import Request from '../../utils/apiUtils'
 
+const Delete = (props) => {
+  function deletes(){
+    console.log(props.record.id)
+  }
+  return(
+    <Popconfirm title="确定删除吗?" onConfirm={() => deletes()}>删除</Popconfirm>
+  )
+}
 const columns = [
   {
     title: '编号',
@@ -10,7 +18,7 @@ const columns = [
   },
   {
     title: '问题描述',
-    dataIndex: 'describe',
+    dataIndex: 'unrecordedQuestion',
   },
   {
     title: '时间',
@@ -18,11 +26,11 @@ const columns = [
   },
   {
     title: '操作',
-    dataIndex: 'action'
+    render: (text, record) => (<Delete record={record} />)
   }
 ];
 
-const data: any[] = [];
+const data = [];
 for (let i = 0; i < 46; i++) {
   data.push({
     id: i,
@@ -31,6 +39,7 @@ for (let i = 0; i < 46; i++) {
     action: `London, Park Lane no. ${i}`,
   });
 }
+
 
 class List extends React.Component {
   state = {
@@ -49,8 +58,7 @@ class List extends React.Component {
     }, 1000);
   };
 
-  onSelectChange = (selectedRowKeys:any) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+  onSelectChange = selectedRowKeys => {
     this.setState({ selectedRowKeys });
   };
 
@@ -71,24 +79,25 @@ class List extends React.Component {
             {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
           </span>
         </div>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
+        <Table rowSelection={rowSelection} columns={columns} dataSource={this.props.datas} />
       </div>
     );
   }
 }
 
 const Pendding = () => {
+  const [datas, setData] = useState()
   useEffect(() => {
     Request('/api/robot/todo', 'get').then(
-      (res:any) => {
-        console.log(res.data.data)
+      res => {
+        setData(res.data.undocumented_issues)
       }
     )
   })
   return (
     <PageHeaderWrapper>
       <Card>
-        <List />
+        <List datas={datas} />
       </Card>
     </PageHeaderWrapper>
   )
