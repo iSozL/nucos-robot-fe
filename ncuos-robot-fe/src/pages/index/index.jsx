@@ -44,7 +44,6 @@ class UploadBox extends React.Component {
           <div className={style.uploader}>
             <div><span>文件名称:</span><Input /></div>
             <div><span>简单说明:</span><TextArea /></div>
-            <div><span>上传者:</span><Input /></div>
             <div style={{ fontWeight: 1000, marginBottom: 10, marginTop: 10 }}>
               <Uploader />
             </div>
@@ -55,11 +54,17 @@ class UploadBox extends React.Component {
   }
 }
 const Uploader = () => {
+  // const [fileData, setFile] = useState()
   const props = {
     name: 'file',
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    action: "http://guoxy.top/api/robot/file",
+    method: "post",
+    data: {
+      file_name: 'test',
+      file_description: 'nmsl'
+    },
     headers: {
-      authorization: 'authorization-text',
+      ContentType: "application/json"
     },
     onChange(info) {
       if (info.file.status !== 'uploading') {
@@ -89,7 +94,7 @@ const Index = () => {
       render: text => <div>{text}</div>,
     },
     {
-      title: '上传者',
+      title: '文件名称',
       dataIndex: 'name',
       key: 'name',
     },
@@ -106,7 +111,7 @@ const Index = () => {
         setLst(res.data)
       }
     )
-  })
+  }, [])
 
   return (
     <PageHeaderWrapper>
@@ -115,7 +120,7 @@ const Index = () => {
           <span style={{display: "inline-block", marginBottom: "10px"}}>更新语料库：</span>
           <div>
             <UploadBox />
-            <div>支持拓展名：.rar .zip .doc .docx .pdf .jpg...</div>
+            <div>支持文件类型：excel</div>
           </div>
         </div>
         <div>

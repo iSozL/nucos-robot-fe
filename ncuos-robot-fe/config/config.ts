@@ -81,7 +81,7 @@ if (!TEST) {
           theme: 'dark',
         },
         {
-          key: 'dust',
+          key: 'dust1',
           fileName: 'dust.css',
           modifyVars: {
             '@primary-color': '#F5222D',
