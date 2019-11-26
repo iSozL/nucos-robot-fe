@@ -18,7 +18,6 @@ import { Icon, Result, Button } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 
 import Authorized from '@/utils/Authorized';
-import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
@@ -55,18 +54,10 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
 /**
  * use Authorized check all menu item
  */
-const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
-  menuList.map(item => {
-    const localItem = {
-      ...item,
-      children: item.children ? menuDataRender(item.children) : [],
-    };
-    return Authorized.check(item.authority, localItem, null) as MenuDataItem;
-  });
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
+    copyright="ncuhome"
     links={[
       {
         key: 'Ant Design Pro',
@@ -182,11 +173,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         );
       }}
       footerRender={footerRender}
-      menuDataRender={menuDataRender}
       formatMessage={formatMessage}
-      rightContentRender={rightProps => <RightContent {...rightProps} />}
-      {...props}
-      {...settings}
     >
       <Authorized authority={authorized!.authority} noMatch={noMatch}>
         {children}
