@@ -120,16 +120,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
    * constructor
    */
 
-  useEffect(() => {
-    if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
-      dispatch({
-        type: 'settings/getSetting',
-      });
-    }
-  }, []);
   /**
    * init variables
    */
@@ -142,10 +132,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
     }
   };
   // get children authority
-  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
-    authority: undefined,
-  };
-
   return (
     <ProLayout
       logo={logo}
@@ -186,9 +172,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       {...props}
       {...settings}
     >
-      <Authorized authority={authorized!.authority} noMatch={noMatch}>
-        {children}
-      </Authorized>
     </ProLayout>
   );
 };

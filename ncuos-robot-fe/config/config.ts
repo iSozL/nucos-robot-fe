@@ -35,11 +35,11 @@ const plugins: IPlugin[] = [
       // },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -116,6 +116,7 @@ export default {
     defaultGitUrl: 'https://github.com/ant-design/pro-blocks',
   },
   hash: true,
+  history: "hash",
   targets: {
     ie: 11,
   },
@@ -124,40 +125,30 @@ export default {
   routes: [
     {
       path: '/',
-      component: '../layouts/SecurityLayout',
+      component: '../layouts/BasicLayout',
+      authority: ['admin', 'user'],
       routes: [
         {
           path: '/',
-          component: '../layouts/BasicLayout',
-          authority: ['admin', 'user'],
-          routes: [
-            {
-              path: '/',
-              redirect: '/index',
-            },
-            {
-              path: '/index',
-              name: '首页',
-              icon: 'home',
-              component: './index/index.jsx',
-            },
-            {
-              path: '/pending',
-              name: '待处理',
-              icon: 'history',
-              component: './pending/index'
-            },
-            {
-              component: './404',
-            },
-          ],
+          redirect: '/index',
+        },
+        {
+          path: '/index',
+          name: '首页',
+          icon: 'home',
+          component: './index/index.jsx',
+        },
+        {
+          path: '/pending',
+          name: '待处理',
+          icon: 'history',
+          component: './pending/index'
         },
         {
           component: './404',
         },
       ],
     },
-
     {
       component: './404',
     },
