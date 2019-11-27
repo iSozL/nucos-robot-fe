@@ -5,6 +5,110 @@ import style from './index.less'
 import Request from '../../utils/apiUtils'
 
 const { TextArea } = Input
+class UploadFiles extends React.Component {
+  state = {
+    fileList: [],
+    uploading: false,
+    file_name: "",
+    description: "",
+  };
+  setDescription = (e) => {
+    this.setState({
+      description: e.target.value
+    })
+  };
+  setFilename = (e) => {
+    this.setState({
+      file_name: e.target.value
+    })
+  };
+  handleUpload = () => {
+    const { fileList } = this.state;
+    const formData = new FormData();
+    fileList.forEach(file => {
+      formData.append('file', file);
+    });
+    formData.append('file_name', this.state.file_name)
+    formData.append('description', this.state.description)
+    this.setState({
+      uploading: true,
+    });
+    if (this.state.file_name && this.state.description) {
+      Request('api/robot/file', 'post', formData).then(
+        res => {
+          this.setState({
+            fileList: [],
+            uploading: false,
+          });
+          if (res.status === 0) {
+            message.success(res.message);
+          } else {
+            message.error(res.message)
+          }
+        },
+        err => {
+          message.error(err.message.toString())
+        }
+      )
+    } else {
+      message.error("请上传完整信息")
+      this.setState({
+        uploading: false,
+      });
+    }
+  };
+
+  render() {
+    const { uploading, fileList } = this.state;
+    const props = {
+      onRemove: file => {
+        this.setState(state => {
+          const index = state.fileList.indexOf(file);
+          const newFileList = state.fileList.slice();
+          newFileList.splice(index, 1);
+          return {
+            fileList: newFileList,
+          };
+        });
+        this.setState({
+          uploading: false
+        })
+      },
+      beforeUpload: file => {
+        this.setState(state => ({
+          fileList: [...state.fileList, file],
+        }));
+        return false;
+      },
+      fileList,
+    };
+
+    return (
+      <div>
+        <div style={{fontWeight: 1000, marginBottom: 10}}>
+          文件名称: <Input placeholder="文件名称" style={{width: 200,marginLeft: 20}} onChange={this.setFilename} />
+        </div>
+        <div style={{fontWeight: 1000, marginBottom: 20}}>
+          文件描述: <TextArea placeholder="不多于20字" style={{width: 200, marginLeft: 20}} autosize={{maxRows: 2}} maxLength="20" onChange={this.setDescription} />
+        </div>
+        <Upload {...props}>
+          <Button>
+            <Icon type="upload" /> 选择文件
+          </Button>
+        </Upload>
+        <Button
+          type="primary"
+          onClick={this.handleUpload}
+          disabled={fileList.length === 0}
+          loading={uploading}
+          style={{ marginTop: 16 }}
+        >
+          {uploading ? '上传中' : '开始上传'}
+        </Button>
+      </div>
+    );
+  }
+}
 class UploadBox extends React.Component {
   state = { visible: false };
 
@@ -42,48 +146,12 @@ class UploadBox extends React.Component {
           width={400}
         >
           <div className={style.uploader}>
-            <div><span>文件名称:</span><Input /></div>
-            <div><span>简单说明:</span><TextArea /></div>
-            <div style={{ fontWeight: 1000, marginBottom: 10, marginTop: 10 }}>
-              <Uploader />
-            </div>
+            <UploadFiles />
           </div>
         </Modal>
       </div>
     );
   }
-}
-const Uploader = () => {
-  // const [fileData, setFile] = useState()
-  const props = {
-    name: 'file',
-    action: "http://guoxy.top/api/robot/file",
-    method: "post",
-    data: {
-      file_name: 'test',
-      file_description: 'nmsl'
-    },
-    headers: {
-      ContentType: "application/json"
-    },
-    onChange(info) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-  };
-  return (
-    <Upload {...props} style={{display: "inline-block"}}>
-      <Button>
-        <Icon type="upload" /> 上传文件
-      </Button>
-    </Upload>
-  )
 }
 const Index = () => {
   const columns = [
@@ -91,7 +159,6 @@ const Index = () => {
       title: '描述',
       dataIndex: 'description',
       key: 'description',
-      render: text => <div>{text}</div>,
     },
     {
       title: '文件名称',
@@ -109,6 +176,14 @@ const Index = () => {
     Request('api/robot/file').then(
       res => {
         setLst(res.data)
+        if (res.status === 0) {
+          message.success(res.message)
+        } else {
+          message.error(res.message)
+        }
+      },
+      err => {
+        message.error(err.message.toString())
       }
     )
   }, [])

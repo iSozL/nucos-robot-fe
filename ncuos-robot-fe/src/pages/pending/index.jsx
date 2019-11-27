@@ -107,9 +107,16 @@ const Pendding = () => {
     Request('/api/robot/todo', 'get').then(
       res => {
         setData(res.data.undocumented_issues)
+        if (res.status === 0) {
+        } else {
+          message.error(res.message)
+        }
+      },
+      err => {
+        message.error(err.message.toString())
       }
     )
-  })
+  }, datas)
   return (
     <PageHeaderWrapper>
       <Card>
