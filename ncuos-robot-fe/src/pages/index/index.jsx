@@ -29,7 +29,7 @@ class UploadFiles extends React.Component {
       formData.append('file', file);
     });
     formData.append('file_name', this.state.file_name)
-    formData.append('description', this.state.description)
+    formData.append('file_description', this.state.description)
     this.setState({
       uploading: true,
     });
