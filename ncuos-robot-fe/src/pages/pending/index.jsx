@@ -116,7 +116,7 @@ const Pendding = () => {
         message.error(err.message.toString())
       }
     )
-  }, datas)
+  }, [])
   return (
     <PageHeaderWrapper>
       <Card>
