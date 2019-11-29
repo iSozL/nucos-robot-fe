@@ -20,6 +20,7 @@ import Authorized from '@/utils/Authorized';
 import { ConnectState } from '@/models/connect';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
+import styles from './Basic.less'
 
 const noMatch = (
   <Result
@@ -137,8 +138,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       logo={logo}
       menuHeaderRender={(logoDom, titleDom) => (
         <Link to="/">
-          {logoDom}
-          {titleDom}
+          <span className={styles.title}>NCU ROBOT</span>
         </Link>
       )}
       onCollapse={handleMenuCollapse}
